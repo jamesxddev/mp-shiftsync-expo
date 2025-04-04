@@ -1,4 +1,6 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, Button, Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -6,6 +8,29 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 export default function HomeScreen() {
+  const [facing, setFacing] = useState<CameraType>('front');
+  const [permission, requestPermission] = useCameraPermissions();
+
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>We need your permission to show the camera</Text>
+        <Button onPress={requestPermission} title="grant permission" />
+      </View>
+    );
+  }
+
+  function toggleCameraFacing() {
+    setFacing(current => (current === 'back' ? 'front' : 'back'));
+  }
+
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -17,9 +42,18 @@ export default function HomeScreen() {
       }>
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Malayan Prints!</ThemedText>
-        <HelloWave />
       </ThemedView>
+      
+      <View style={styles.container}>
+      <CameraView style={styles.camera} facing={facing}>
+        <View style={styles.buttonContainer}>
+        </View>
+      </CameraView>
+    </View>
       <ThemedView style={styles.stepContainer}>
+
+        
+
         <ThemedText type="subtitle">Step 1: Try it</ThemedText>
         <ThemedText>
           Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
@@ -64,11 +98,48 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  buttonContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+    margin: 100,
+  },
   reactLogo: {
     height: 178,
     width: 290,
     bottom: 0,
     left: 0,
     position: 'absolute',
+  },
+  message: {
+    textAlign: 'center',
+    paddingBottom: 10,
+  },
+  camera: {
+    flex: 1,
+  },
+  controls: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    margin: 20,
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+  },
+  button: {
+    flex: 0.3,
+    alignSelf: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: '#ffffff80',
+    padding: 10,
+    borderRadius: 10,
+  },
+  text: {
+    fontSize: 18,
+    color: 'black',
   },
 });
