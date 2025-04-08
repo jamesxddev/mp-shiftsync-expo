@@ -2,14 +2,26 @@ import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, Button, Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
-import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
+import { format } from 'date-fns';
+
 export default function HomeScreen() {
   const [facing, setFacing] = useState<CameraType>('front');
   const [permission, requestPermission] = useCameraPermissions();
+  
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000); // Update every second
+
+    return () => clearInterval(interval); // Clean up on unmount
+  }, []);
+
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -26,11 +38,6 @@ export default function HomeScreen() {
     );
   }
 
-  function toggleCameraFacing() {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
-  }
-
-
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
@@ -41,14 +48,21 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Malayan Prints!</ThemedText>
+        <ThemedText type="title">Welcome James!</ThemedText>
       </ThemedView>
+
+      <View>
+        <Text style={styles.time}>
+          {format(currentDate, 'PP h:mm a')} {/* Example: Apr 8, 2025 at 4:05 PM */}
+        </Text>
+
+      </View>
       
       <View style={styles.container}>
-        {/* <CameraView style={styles.camera} facing={facing}>
+        <CameraView style={styles.camera} facing={facing}>
           <View style={styles.buttonContainer}>
           </View>
-        </CameraView> */}
+        </CameraView>
       </View>
 
       <ThemedView style={styles.stepContainer}>
@@ -139,5 +153,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 18,
     color: 'black',
+  },
+  label: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  time: {
+    fontSize: 16,
+    color: 'white',
   },
 });
