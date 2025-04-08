@@ -44,7 +44,7 @@ export default function HomeScreen() {
       headerImage={
         <Image
           source={require('@/assets/images/mp-header-logo.jpg')}
-          style={styles.reactLogo}
+          style={styles.headerLogo}
         />
       }>
       <ThemedView style={styles.titleContainer}>
@@ -65,37 +65,17 @@ export default function HomeScreen() {
         </CameraView>
       </View>
 
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
+      <View style={styles.buttonGroup}>
+        <TouchableOpacity
+          style={styles.buttonStyle}>
+          <Text style={styles.buttonText}>Time In</Text>
+        </TouchableOpacity>
+        <View style={{ width: 20 }} />
+        <TouchableOpacity 
+          style={[styles.buttonStyle, {backgroundColor: '#fc2424'}]}>
+          <Text style={styles.buttonText}>Time Out</Text>
+        </TouchableOpacity>
+      </View>
     </ParallaxScrollView>
   );
 }
@@ -118,9 +98,9 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    margin: 100,
+    margin: 150,
   },
-  reactLogo: {
+  headerLogo: {
     height: 200,
     width: 430,
     bottom: 0,
@@ -133,14 +113,6 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
-  },
-  controls: {
-    flex: 1,
-    backgroundColor: 'transparent',
-    flexDirection: 'row',
-    margin: 20,
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
   },
   button: {
     flex: 0.3,
@@ -162,5 +134,28 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 16,
     color: 'white',
+  },
+  buttonStyle: {
+    backgroundColor: '#1a831a', // Green background
+    paddingVertical: 12, // Vertical padding
+    paddingHorizontal: 32, // Horizontal padding
+    borderRadius: 8, // Rounded corners
+    elevation: 3, // Shadow for Android
+    shadowColor: '#000', // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
+  },
+  buttonText: {
+    color: 'white', // Text color
+    fontSize: 18, // Text size
+    fontWeight: 'bold', // Text weight
+    textAlign: 'center', // Center text
+  },
+  buttonGroup: {
+    flexDirection: 'row',
+    marginTop: 30,
+    justifyContent: "center", 
+    alignItems: "center"
   },
 });
