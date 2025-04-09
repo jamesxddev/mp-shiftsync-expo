@@ -15,7 +15,7 @@ export default function LoginScreen() {
   const handleLogin = () => {
     // Here you’d normally check credentials and store auth state
     
-    router.replace('/(auth)/tabs');  // This redirects to the tab navigation screen under (tabs)
+    router.replace('/(auth)/(tabs)');  // This redirects to the tab navigation screen under (tabs)
   };
 
   return (
