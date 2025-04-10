@@ -3,8 +3,7 @@ import { View, Text, Button, Image, StyleSheet, TextInput, TouchableOpacity } fr
 import { useRouter } from 'expo-router';
 
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -12,10 +11,13 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
 
+  const { login } = useAuth();
+
   const handleLogin = () => {
     // Here you’d normally check credentials and store auth state
-    
-    router.replace('/(auth)/(tabs)');  // This redirects to the tab navigation screen under (tabs)
+    login();
+    // This redirects to the tab navigation screen under (tabs)
+    router.replace('/(auth)/(tabs)');  
   };
 
   return (
@@ -34,6 +36,7 @@ export default function LoginScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Username"
+                placeholderTextColor="#000"
                 value={username}
                 autoCapitalize="none"
                 onChangeText={setUsername}
@@ -42,6 +45,7 @@ export default function LoginScreen() {
             <TextInput
                 style={styles.input}
                 placeholder="Password"
+                placeholderTextColor="#000"
                 value={password}
                 secureTextEntry={secureText}
                 onChangeText={setPassword}

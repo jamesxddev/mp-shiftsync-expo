@@ -15,9 +15,12 @@ const AuthContext = createContext<AuthContextType>({
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  console.log(isLoggedIn,'isLoggedIn_BEFORE')
+
   const login = () => setIsLoggedIn(true);
   const logout = () => setIsLoggedIn(false);
 
+  console.log(isLoggedIn,'isLoggedIn_AFTER')
   console.log(children,'children')
 
   return (

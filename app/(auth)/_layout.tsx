@@ -5,11 +5,15 @@ import { useAuth } from '../../contexts/AuthContext';
 export default function AuthLayout() {
   const { isLoggedIn } = useAuth();
 
-  console.log(isLoggedIn,'isLoggedInInsideTabs')
-
   if (!isLoggedIn) {
     return <Redirect href="/login" />;
   }
 
-  return <Stack />;
+  return (
+    <Stack>
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen name="+not-found" />
+    </Stack>
+
+  );
 }
