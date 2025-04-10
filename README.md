@@ -1,4 +1,7 @@
-# Welcome to your Expo app 👋
+# Welcome to Malayan Prints ShiftSync app 👋
+![App Screenshot](./assets/images/mp-shiftsync-preview.PNG)
+
+# Created in Expo app 
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
