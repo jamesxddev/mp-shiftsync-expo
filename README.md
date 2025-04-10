@@ -1,5 +1,5 @@
 # Welcome to Malayan Prints ShiftSync app 👋
-![App Screenshot](./assets/images/mp-shiftsync-preview.PNG)
+![App Screenshot](./assets/images/mp-shiftsync-prev.png)
 
 # Created in Expo app 
 
