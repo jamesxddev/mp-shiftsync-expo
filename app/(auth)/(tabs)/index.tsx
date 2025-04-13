@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, Button, Image, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Button, StyleSheet, Platform, TouchableOpacity } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView';
+import Header from '@/app/header';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import { format } from 'date-fns';
 
 export default function HomeScreen() {
-  const [facing, setFacing] = useState<CameraType>('front');
+  const [facing] = useState<CameraType>('front');
   const [permission, requestPermission] = useCameraPermissions();
   
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -39,14 +39,8 @@ export default function HomeScreen() {
   }
 
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/mp-header-logo.jpg')}
-          style={styles.headerLogo}
-        />
-      }>
+    <Header>
+
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome James!</ThemedText>
       </ThemedView>
@@ -76,7 +70,7 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Time Out</Text>
         </TouchableOpacity>
       </View>
-    </ParallaxScrollView>
+    </Header>
   );
 }
 

@@ -1,6 +1,5 @@
-// app/(auth)/_layout.tsx
 import { Redirect, Stack } from 'expo-router';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function AuthLayout() {
   const { isLoggedIn } = useAuth();
