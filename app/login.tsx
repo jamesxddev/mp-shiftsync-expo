@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Button, Image, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { useAuth } from '../contexts/AuthContext';
+import Header from './header';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -27,48 +27,40 @@ export default function LoginScreen() {
   };
 
   return (
-      <ParallaxScrollView
-        headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-        headerImage={
-          <Image
-            source={require('@/assets/images/mp-header-logo.jpg')}
-            style={styles.headerLogo}
-          />
-        }>
+    <Header>
+      <View style={styles.container}>
+        <Text style={styles.title}>Login 🔒</Text>
 
-        <View style={styles.container}>
-            <Text style={styles.title}>Login 🔒</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Username"
+          placeholderTextColor="#000"
+          value={username}
+          autoCapitalize="none"
+          onChangeText={setUsername}
+        />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Username"
-                placeholderTextColor="#000"
-                value={username}
-                autoCapitalize="none"
-                onChangeText={setUsername}
-            />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          placeholderTextColor="#000"
+          value={password}
+          secureTextEntry={secureText}
+          onChangeText={setPassword}
+        />
 
-            <TextInput
-                style={styles.input}
-                placeholder="Password"
-                placeholderTextColor="#000"
-                value={password}
-                secureTextEntry={secureText}
-                onChangeText={setPassword}
-            />
+        <TouchableOpacity onPress={() => setSecureText(!secureText)}>
+          <Text style={styles.toggleText}>
+            {secureText ? 'Show' : 'Hide'} Password
+          </Text>
+        </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => setSecureText(!secureText)}>
-                <Text style={styles.toggleText}>
-                    {secureText ? 'Show' : 'Hide'} Password
-                </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-                <Text style={styles.buttonText}>Log In</Text>
-            </TouchableOpacity>
-        </View>
-        
-      </ParallaxScrollView>
+        <TouchableOpacity style={styles.button} onPress={handleLogin}>
+          <Text style={styles.buttonText}>Log In</Text>
+        </TouchableOpacity>
+      </View>
+    </Header>
+      
     );
 }
 
