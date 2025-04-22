@@ -1,33 +1,43 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
+import * as authApi from '../api/auth';
+
+type User = {
+  email: string;
+  token: string;
+  username : string;
+};
 
 type AuthContextType = {
-  isLoggedIn: boolean;
-  login: () => void;
+  user:  User | null;
+  login: (username: string, password: string) => Promise<void>; //() => void;
   logout: () => void;
 };
 
-const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: false,
-  login: () => {},
-  logout: () => {},
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
-  console.log(isLoggedIn,'isLoggedIn_BEFORE')
+  const login = async (username: string, password: string) => {
+    const userData = await authApi.login(username, password);
+    setUser(userData);
+  };
 
-  const login = () => setIsLoggedIn(true);
+
   const logout = () => setIsLoggedIn(false);
 
-  console.log(isLoggedIn,'isLoggedIn_AFTER')
-  console.log(children,'children')
-
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

@@ -7,13 +7,16 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 
 import { format } from 'date-fns';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export default function HomeScreen() {
+  const { user } = useAuth();
+
   const [facing, setFacing] = useState<CameraType>('front');
   const [permission, requestPermission] = useCameraPermissions();
   
   const [currentDate, setCurrentDate] = useState(new Date());
-
+  
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDate(new Date());
@@ -48,7 +51,7 @@ export default function HomeScreen() {
         />
       }>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome James!</ThemedText>
+        <ThemedText type="title">Welcome {user?.username}</ThemedText>
       </ThemedView>
 
       <View>

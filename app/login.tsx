@@ -7,17 +7,23 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
+  const [error, setError] = useState('');
 
-  const { login } = useAuth();
 
-  const handleLogin = () => {
-    // Here you’d normally check credentials and store auth state
-    login();
-    // This redirects to the tab navigation screen under (tabs)
-    router.replace('/(auth)/(tabs)');  
+  const handleLogin = async () => {
+    try {
+        await login(username, password);
+        
+        // This redirects to the tab navigation screen under (tabs)
+        router.replace('/(auth)/(tabs)');  
+      } catch (e: any) {
+        setError(e.message);
+      }
+    
   };
 
   return (
