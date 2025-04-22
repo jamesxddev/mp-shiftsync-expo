@@ -4,7 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 export default function AuthLayout() {
   const { user } = useAuth();
 
-  if (!user) {
+  if (user == null) {
     return <Redirect href="/login" />;
   }
 

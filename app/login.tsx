@@ -11,17 +11,17 @@ export default function LoginScreen() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
-  const [error, setError] = useState('');
 
 
   const handleLogin = async () => {
     try {
+      
         await login(username, password);
-        
+          
         // This redirects to the tab navigation screen under (tabs)
         router.replace('/(auth)/(tabs)');  
       } catch (e: any) {
-        setError(e.message);
+        alert(e.message);
       }
     
   };

@@ -20,12 +20,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState(null);
 
   const login = async (username: string, password: string) => {
+    
     const userData = await authApi.login(username, password);
     setUser(userData);
   };
 
 
-  const logout = () => setIsLoggedIn(false);
+  const logout = () => {
+    setUser(null);
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
