@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/ThemedView';
 
 import { format } from 'date-fns';
 import { useAuth } from '../../../contexts/AuthContext';
+import * as shiftApi from '../../../api/shift';
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -16,7 +17,12 @@ export default function HomeScreen() {
   const [permission, requestPermission] = useCameraPermissions();
   
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
+  const [presentToday, setPresentToday] = useState(false);
+  const [shiftEnded, setShiftEnded] = useState(false);
+  const [shiftId, setShiftId] = useState('');
+  const [timeOutDisabled, setTimeOutDisabled] = useState(true);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentDate(new Date());
@@ -25,6 +31,59 @@ export default function HomeScreen() {
     return () => clearInterval(interval); // Clean up on unmount
   }, []);
 
+  useEffect(() => {
+
+    const fetchAttendance = async () => {
+      try {
+        const username = user?.username;
+        if (!username) {
+          console.error("Username is missing");
+          return;
+        }
+
+        var response = await shiftApi.getShiftAttendance(user!.username);
+        console.log(response,'response TODAYS SHIFT')
+
+        setPresentToday(response.presentToday);
+        setShiftId(response.shiftId);
+        setShiftEnded(response.shiftEnded);
+
+        timeOutButton(response.presentToday, response.shiftEnded);
+
+      } catch (error) {
+        console.error("Failed to fetch shifts", error);
+      }
+    };
+
+    fetchAttendance();
+
+  }, [presentToday]);
+
+  const handleTimeIn = async () => {
+    var response = await shiftApi.timeIn(user!.username);
+    if (response.isSuccess) {
+      setPresentToday(true);
+      timeOutButton(true, false)
+    }
+  }
+
+  const handleTimeOut = async () => {
+    var response = await shiftApi.endShift(user!.username, shiftId);
+    console.log(response, 'response -> TIMEOUT')
+    timeOutButton(true, true)
+  }
+
+  const timeOutButton = (startShift: boolean, endShift: boolean) => {
+
+    if (startShift) {
+      setTimeOutDisabled(false);
+    }
+
+    if (endShift) {
+      setTimeOutDisabled(true);
+    }
+
+  }
 
   if (!permission) {
     // Camera permissions are still loading.
@@ -43,7 +102,6 @@ export default function HomeScreen() {
 
   return (
     <Header>
-
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome {user?.username}</ThemedText>
       </ThemedView>
@@ -64,12 +122,21 @@ export default function HomeScreen() {
 
       <View style={styles.buttonGroup}>
         <TouchableOpacity
-          style={styles.buttonStyle}>
+          onPress={handleTimeIn}
+          disabled={presentToday}
+          style={[styles.buttonStyle, {
+            opacity: !presentToday ? 1: 0.5}
+          ]}
+          >
           <Text style={styles.buttonText}>Time In</Text>
         </TouchableOpacity>
         <View style={{ width: 20 }} />
-        <TouchableOpacity 
-          style={[styles.buttonStyle, {backgroundColor: '#fc2424'}]}>
+        <TouchableOpacity
+          onPress={handleTimeOut}
+          disabled = {timeOutDisabled} 
+          style={[styles.buttonStyle, {
+            backgroundColor: '#fc2424',  
+            opacity: timeOutDisabled ? 0.5 : 1 }, ]}>
           <Text style={styles.buttonText}>Time Out</Text>
         </TouchableOpacity>
       </View>
@@ -83,10 +150,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
@@ -97,36 +160,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     margin: 150,
   },
-  headerLogo: {
-    height: 200,
-    width: 430,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
   message: {
     textAlign: 'center',
     paddingBottom: 10,
   },
   camera: {
     flex: 1,
-  },
-  button: {
-    flex: 0.3,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-    backgroundColor: '#ffffff80',
-    padding: 10,
-    borderRadius: 10,
-  },
-  text: {
-    fontSize: 18,
-    color: 'black',
-  },
-  label: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
   },
   time: {
     fontSize: 16,
