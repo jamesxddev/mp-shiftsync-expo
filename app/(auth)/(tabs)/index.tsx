@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Platform, TouchableOpacity } from 'react-native';
+import { View, Text, Button, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 import Header from '@/app/header';
@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import { useAuth } from '../../../contexts/AuthContext';
 import * as shiftApi from '../../../api/shift';
 
+import { Shift } from '../../../types/shiftAttendance'
+
 export default function HomeScreen() {
   const { user } = useAuth();
 
@@ -19,9 +21,9 @@ export default function HomeScreen() {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   const [presentToday, setPresentToday] = useState(false);
-  const [shiftEnded, setShiftEnded] = useState(false);
   const [shiftId, setShiftId] = useState('');
   const [timeOutDisabled, setTimeOutDisabled] = useState(true);
+  const [shifts, setShifts] = useState<Shift[]>([]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -46,8 +48,10 @@ export default function HomeScreen() {
 
         setPresentToday(response.presentToday);
         setShiftId(response.shiftId);
-        setShiftEnded(response.shiftEnded);
+        setShifts(response.shifts)
 
+        console.log(shifts, 'shifts USESTATE')
+        
         timeOutButton(response.presentToday, response.shiftEnded);
 
       } catch (error) {
@@ -100,6 +104,26 @@ export default function HomeScreen() {
     );
   }
 
+  const renderItem = ({ item }: { item: Shift }) => (
+    <View style={styles.row}>
+      <Text style={styles.cell}>{new Date(item.timeIn).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      })}</Text>
+      <Text style={styles.cell}>{new Date(item.timeIn).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })}</Text>
+      <Text style={styles.cell}>{item.timeOut !== null ? new Date(item.timeOut).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      }) : ''} </Text>
+    </View>
+  );
+
   return (
     <Header>
       <ThemedView style={styles.titleContainer}>
@@ -139,6 +163,20 @@ export default function HomeScreen() {
             opacity: timeOutDisabled ? 0.5 : 1 }, ]}>
           <Text style={styles.buttonText}>Time Out</Text>
         </TouchableOpacity>
+      </View>
+      <br />
+      <View style={styles.container}>
+        <Text style={styles.title}>Shifts</Text>
+        <View style={[styles.row, styles.header]}>
+          <Text style={[styles.cell, styles.headerText]}>Date</Text>
+          <Text style={[styles.cell, styles.headerText]}>Time In</Text>
+          <Text style={[styles.cell, styles.headerText]}>Time Out</Text>
+        </View>
+        <FlatList
+          data={shifts}
+          renderItem={renderItem}
+          keyExtractor={(item, index) => index.toString()}
+        />
       </View>
     </Header>
   );
@@ -193,5 +231,30 @@ const styles = StyleSheet.create({
     marginTop: 30,
     justifyContent: "center", 
     alignItems: "center"
+  },
+  row: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderColor: "#ccc",
+    paddingVertical: 8,
+    color: "white"
+  },
+  cell: {
+    flex: 1,
+    textAlign: "center",
+    color: "#fff", // white font
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: 'white'
+  },
+  header: {
+    backgroundColor: "#f0f0f0",
+  },
+  headerText: {
+    fontWeight: "bold",
+    color: "black"
   },
 });
