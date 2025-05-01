@@ -108,21 +108,21 @@ export default function HomeScreen() {
 
   const renderItem = ({ item }: { item: Shift }) => (
     <View style={styles.row}>
-      <Text style={styles.cell}>{new Date(item.timeIn).toLocaleDateString("en-US", {
+      <ThemedText style={styles.cell}>{new Date(item.timeIn).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric"
-      })}</Text>
-      <Text style={styles.cell}>{new Date(item.timeIn).toLocaleTimeString("en-US", {
+      })}</ThemedText>
+      <ThemedText style={styles.cell}>{new Date(item.timeIn).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
-      })}</Text>
-      <Text style={styles.cell}>{item.timeOut !== null ? new Date(item.timeOut).toLocaleTimeString("en-US", {
+      })}</ThemedText>
+      <ThemedText style={styles.cell}>{item.timeOut !== null ? new Date(item.timeOut).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
         hour12: true,
-      }) : ''} </Text>
+      }) : ''} </ThemedText>
     </View>
   );
 
