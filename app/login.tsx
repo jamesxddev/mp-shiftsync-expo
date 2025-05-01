@@ -5,6 +5,8 @@ import { useRouter } from 'expo-router';
 import Header from './header';
 import { useAuth } from '@/contexts/AuthContext';
 
+import { ThemedText } from '@/components/ThemedText';
+
 export default function LoginScreen() {
   const router = useRouter();
   const { login } = useAuth();
@@ -29,7 +31,7 @@ export default function LoginScreen() {
   return (
     <Header>
       <View style={styles.container}>
-        <Text style={styles.title}>Login 🔒</Text>
+        <ThemedText style={styles.title} >Login 🔒</ThemedText>
 
         <TextInput
           style={styles.input}
@@ -82,7 +84,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 32,
     textAlign: 'center',
-    color: 'white',
+    lineHeight: 30
   },
   input: {
     backgroundColor: '#fff',

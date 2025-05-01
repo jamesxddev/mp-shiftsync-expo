@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Platform, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 
 import Header from '@/app/header';
@@ -133,9 +133,8 @@ export default function HomeScreen() {
       </ThemedView>
 
       <View>
-        <Text style={styles.time}>
-          {format(currentDate, 'PP h:mm a')} {/* Example: Apr 8, 2025 at 4:05 PM */}
-        </Text>
+        
+        <ThemedText style={styles.time} >{format(currentDate, 'PP h:mm a')} {/* Example: Apr 8, 2025 at 4:05 PM */}</ThemedText>
 
       </View>
       
@@ -168,11 +167,11 @@ export default function HomeScreen() {
       </View>
       
       <View style={styles.container}>
-        <Text style={styles.title}>Shifts</Text>
+        <ThemedText style={styles.title}>Shifts</ThemedText>
         <View style={[styles.row, styles.header]}>
-          <Text style={[styles.cell, styles.headerText]}>Date</Text>
-          <Text style={[styles.cell, styles.headerText]}>Time In</Text>
-          <Text style={[styles.cell, styles.headerText]}>Time Out</Text>
+          <ThemedText style={[styles.cell, styles.headerText]}>Date</ThemedText>
+          <ThemedText style={[styles.cell, styles.headerText]}>Time In</ThemedText>
+          <ThemedText style={[styles.cell, styles.headerText]}>Time Out</ThemedText>
         </View>
         <FlatList
           scrollEnabled={false}
@@ -210,7 +209,6 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 16,
-    color: 'white',
   },
   buttonStyle: {
     backgroundColor: '#1a831a', // Green background
@@ -245,13 +243,11 @@ const styles = StyleSheet.create({
   cell: {
     flex: 1,
     textAlign: "center",
-    color: "#fff", // white font
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 12,
-    color: 'white'
   },
   header: {
     backgroundColor: "#f0f0f0",
