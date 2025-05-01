@@ -34,47 +34,49 @@ export default function HomeScreen() {
   }, []);
 
   useEffect(() => {
+    fetchAttendance()
+  }, []);
 
-    const fetchAttendance = async () => {
-      try {
-        const username = user?.username;
-        if (!username) {
-          console.error("Username is missing");
-          return;
-        }
-
-        var response = await shiftApi.getShiftAttendance(user!.username);
-        console.log(response,'response TODAYS SHIFT')
-
-        setPresentToday(response.presentToday);
-        setShiftId(response.shiftId);
-        setShifts(response.shifts)
-
-        console.log(shifts, 'shifts USESTATE')
-        
-        timeOutButton(response.presentToday, response.shiftEnded);
-
-      } catch (error) {
-        console.error("Failed to fetch shifts", error);
+  const fetchAttendance = async () => {
+    try {
+      const username = user?.username;
+      if (!username) {
+        console.error("Username is missing");
+        return;
       }
-    };
 
-    fetchAttendance();
+      var response = await shiftApi.getShiftAttendance(user!.username);
+      console.log(response,'response TODAYS SHIFT')
 
-  }, [presentToday]);
+      setPresentToday(response.presentToday);
+      setShiftId(response.shiftId);
+      setShifts(response.shifts)
+
+      console.log(shifts, 'shifts USESTATE')
+      
+      timeOutButton(response.presentToday, response.shiftEnded);
+
+    } catch (error) {
+      console.error("Failed to fetch shifts", error);
+    }
+
+  }
 
   const handleTimeIn = async () => {
     var response = await shiftApi.timeIn(user!.username);
     if (response.isSuccess) {
       setPresentToday(true);
       timeOutButton(true, false)
+      fetchAttendance();
     }
   }
 
   const handleTimeOut = async () => {
     var response = await shiftApi.endShift(user!.username, shiftId);
     console.log(response, 'response -> TIMEOUT')
+    
     timeOutButton(true, true)
+    fetchAttendance();
   }
 
   const timeOutButton = (startShift: boolean, endShift: boolean) => {
@@ -164,7 +166,7 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>Time Out</Text>
         </TouchableOpacity>
       </View>
-      <br />
+      
       <View style={styles.container}>
         <Text style={styles.title}>Shifts</Text>
         <View style={[styles.row, styles.header]}>
@@ -173,6 +175,7 @@ export default function HomeScreen() {
           <Text style={[styles.cell, styles.headerText]}>Time Out</Text>
         </View>
         <FlatList
+          scrollEnabled={false}
           data={shifts}
           renderItem={renderItem}
           keyExtractor={(item, index) => index.toString()}
