@@ -1,4 +1,5 @@
-import { StyleSheet, Image, Platform, TouchableOpacity, Text } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Image, Platform, TouchableOpacity, Text, View, Alert, TextInput } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
 import { ExternalLink } from '@/components/ExternalLink';
@@ -8,115 +9,229 @@ import { ThemedView } from '@/components/ThemedView';
 import Header from '@/app/header';
 import { useAuth } from '@/contexts/AuthContext';
 
+import * as ImagePicker from 'expo-image-picker';
+import { Ionicons } from '@expo/vector-icons';
+
+import * as authApi from '../../../api/auth';
+
+
 export default function TabTwoScreen() {
 
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
-  const handleLogin = () => {
+  const [image, setImage] = useState<string | null>(null);
+
+  // Password states
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [isSecurityOpen, setIsSecurityOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(true);
+
+  const pickImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: 'images',
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.7,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
+  const handleSignOut = () => {
     logout();
   };
 
+  const handleChangePassword = async () => {
+    var response = await authApi.updatePassword(user!.username, newPassword);
+    if (!response.isSuccess) { 
+      alert('Password changed failed!')
+    }
+
+    alert('Password changed successfully!')
+  }
+
   return (
     <Header>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Explore</ThemedText>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Logout</Text>
+      <View style={styles.container}>
+      <TouchableOpacity 
+        // onPress={pickImage}
+        >
+        <Image
+          source={image ? { uri: image } : require('../../../assets/images/default-avatar.png')}
+          style={styles.avatar}
+        />
+        {/* <Text style={styles.changePicText}>Tap to change picture</Text> */}
+      </TouchableOpacity>
+
+      <ThemedText style={styles.username}>{user?.username}</ThemedText>
+
+      <View style={styles.section}>
+        <TouchableOpacity
+          style={styles.sectionHeader}
+          onPress={() => setIsProfileOpen(prev => !prev)}
+        >
+          <ThemedText style={styles.sectionTitle}>Profile</ThemedText>
+          <Ionicons
+            name={isProfileOpen ? 'chevron-up' : 'chevron-down'}
+            size={24}
+            color="#333"
+          />
         </TouchableOpacity>
-      </ThemedView>
-      <ThemedText>This app includes example code to help you get started.</ThemedText>
-      <Collapsible title="File-based routing">
-        <ThemedText>
-          This app has two screens:{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/explore.tsx</ThemedText>
-        </ThemedText>
-        <ThemedText>
-          The layout file in <ThemedText type="defaultSemiBold">app/(tabs)/_layout.tsx</ThemedText>{' '}
-          sets up the tab navigator.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/router/introduction">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Android, iOS, and web support">
-        <ThemedText>
-          You can open this project on Android, iOS, and the web. To open the web version, press{' '}
-          <ThemedText type="defaultSemiBold">w</ThemedText> in the terminal running this project.
-        </ThemedText>
-      </Collapsible>
-      <Collapsible title="Images">
-        <ThemedText>
-          For static images, you can use the <ThemedText type="defaultSemiBold">@2x</ThemedText> and{' '}
-          <ThemedText type="defaultSemiBold">@3x</ThemedText> suffixes to provide files for
-          different screen densities
-        </ThemedText>
-        <Image source={require('@/assets/images/react-logo.png')} style={{ alignSelf: 'center' }} />
-        <ExternalLink href="https://reactnative.dev/docs/images">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Custom fonts">
-        <ThemedText>
-          Open <ThemedText type="defaultSemiBold">app/_layout.tsx</ThemedText> to see how to load{' '}
-          <ThemedText style={{ fontFamily: 'SpaceMono' }}>
-            custom fonts such as this one.
-          </ThemedText>
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/versions/latest/sdk/font">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Light and dark mode components">
-        <ThemedText>
-          This template has light and dark mode support. The{' '}
-          <ThemedText type="defaultSemiBold">useColorScheme()</ThemedText> hook lets you inspect
-          what the user's current color scheme is, and so you can adjust UI colors accordingly.
-        </ThemedText>
-        <ExternalLink href="https://docs.expo.dev/develop/user-interface/color-themes/">
-          <ThemedText type="link">Learn more</ThemedText>
-        </ExternalLink>
-      </Collapsible>
-      <Collapsible title="Animations">
-        <ThemedText>
-          This template includes an example of an animated component. The{' '}
-          <ThemedText type="defaultSemiBold">components/HelloWave.tsx</ThemedText> component uses
-          the powerful <ThemedText type="defaultSemiBold">react-native-reanimated</ThemedText>{' '}
-          library to create a waving hand animation.
-        </ThemedText>
-        {Platform.select({
-          ios: (
-            <ThemedText>
-              The <ThemedText type="defaultSemiBold">components/ParallaxScrollView.tsx</ThemedText>{' '}
-              component provides a parallax effect for the header image.
-            </ThemedText>
-          ),
-        })}
-      </Collapsible>
+
+        {isProfileOpen && (
+          <View style={styles.securityContent}>
+            <TextInput
+              style={styles.inputDisabled}
+              placeholder="Full Name"
+              value={user?.fullName}
+              
+              editable={false}
+            />
+            <TextInput
+              style={styles.inputDisabled}
+              placeholder="Username"
+              value={user?.username}
+              editable={false}
+            />
+            
+          </View>
+        )}
+      </View>
+
+      {/* Collapsible SECURITY SECTION */}
+      <View style={styles.section}>
+        <TouchableOpacity
+          style={styles.sectionHeader}
+          onPress={() => setIsSecurityOpen(prev => !prev)}
+        >
+          <ThemedText style={styles.sectionTitle}>Security</ThemedText>
+          <Ionicons
+            name={isSecurityOpen ? 'chevron-up' : 'chevron-down'}
+            size={24}
+            color="#333"
+          />
+        </TouchableOpacity>
+
+        {isSecurityOpen && (
+          <View style={styles.securityContent}>
+            <TextInput
+              style={styles.input}
+              placeholder="New Password"
+              placeholderTextColor="#000"
+              secureTextEntry
+              value={newPassword}
+              onChangeText={setNewPassword}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Confirm New Password"
+              placeholderTextColor="#000"
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+            />
+            <TouchableOpacity style={styles.button} 
+              onPress={handleChangePassword}
+              >
+              <Text style={styles.buttonText}>Change Password</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
+
+      <TouchableOpacity style={[styles.button, styles.signOut]} onPress={handleSignOut}>
+        <Text style={styles.buttonText}>Sign Out</Text>
+      </TouchableOpacity>
+    </View>
+      
     </Header>
   );
 }
 
 const styles = StyleSheet.create({
-  headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
-    position: 'absolute',
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
   },
-  titleContainer: {
-    flexDirection: 'row',
-    gap: 8,
+  avatar: {
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: '#ccc',
+  },
+  changePicText: {
+    marginTop: 8,
+    color: '#666',
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  username: {
+    fontSize: 24,
+    fontWeight: '600',
+    marginVertical: 20,
   },
   button: {
-    backgroundColor: '#2563eb',
-    paddingVertical: 16,
-    borderRadius: 12,
-    alignItems: 'center',
+    backgroundColor: '#1e90ff',
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: 8,
+    marginVertical: 10,
+  },
+  signOut: {
+    backgroundColor: '#ff4d4d',
+    marginTop: 30,
   },
   buttonText: {
     color: '#fff',
-    fontSize: 17,
     fontWeight: '500',
+    fontSize: 16,
+    textAlign: 'center'
   },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  section: {
+    width: '100%',
+    marginTop: 30,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  input: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    borderColor: '#d1d5db',
+    borderWidth: 1,
+  },
+  securityContent: {
+    marginTop: 0,
+  },
+  inputDisabled: {
+    backgroundColor: '#f0f0f0',
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
+    fontSize: 16,
+    marginBottom: 16,
+    borderColor: '#d1d5db',
+    borderWidth: 1,
+    color: '#888',
+  },
+  
 });

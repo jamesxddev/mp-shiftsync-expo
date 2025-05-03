@@ -46,14 +46,11 @@ export default function HomeScreen() {
       }
 
       var response = await shiftApi.getShiftAttendance(user!.username);
-      console.log(response,'response TODAYS SHIFT')
-
+      
       setPresentToday(response.presentToday);
       setShiftId(response.shiftId);
       setShifts(response.shifts)
 
-      console.log(shifts, 'shifts USESTATE')
-      
       timeOutButton(response.presentToday, response.shiftEnded);
 
     } catch (error) {
@@ -73,7 +70,6 @@ export default function HomeScreen() {
 
   const handleTimeOut = async () => {
     var response = await shiftApi.endShift(user!.username, shiftId);
-    console.log(response, 'response -> TIMEOUT')
     
     timeOutButton(true, true)
     fetchAttendance();
