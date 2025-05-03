@@ -5,6 +5,7 @@ type User = {
   email: string;
   token: string;
   username : string;
+  fullName : string;
 };
 
 type AuthContextType = {
