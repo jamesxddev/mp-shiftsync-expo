@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 import * as authApi from '../api/auth';
+import { saveToken, deleteToken } from '../services/TokenService';
 
 type User = {
   email: string;
@@ -24,11 +25,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     const userData = await authApi.login(username, password);
     setUser(userData);
+    saveToken(userData.token)
   };
 
 
   const logout = () => {
     setUser(null);
+    deleteToken();
   };
 
   return (

@@ -1,11 +1,11 @@
-import axios from 'axios';
 import config from '../config';
 import { ShiftAttendanceResponse } from '../types/shiftAttendance';
 import { Response } from '../types/response';
+import api from './client';
 
 export const timeIn = async (username: string) => {
     try {
-        const response = await axios.post<Response>(`${config.API_URL}/shift`, {
+        const response = await api.post<Response>(`${config.API_URL}/shift`, {
             username,
         });
 
@@ -17,7 +17,7 @@ export const timeIn = async (username: string) => {
 
 export const getShiftAttendance = async (username: string) => {
     try {
-        const response = await axios.get<ShiftAttendanceResponse>(`${config.API_URL}/shift/${username}`, {});
+        const response = await api.get<ShiftAttendanceResponse>(`${config.API_URL}/shift/${username}`, {});
         console.log(response, 'response Types')
 
         return response.data;
@@ -28,7 +28,7 @@ export const getShiftAttendance = async (username: string) => {
 
 export const endShift = async (username: string, id: string) => {
     try {
-        const response = await axios.put<Response>(`${config.API_URL}/shift/${id}`, {
+        const response = await api.put<Response>(`${config.API_URL}/shift/${id}`, {
             username,
         });
 
