@@ -1,7 +1,8 @@
-import config from '../config';
-import { ShiftAttendanceResponse } from '../types/shiftAttendance';
-import { Response } from '../types/response';
+import config from '@/config';
+import { ShiftAttendanceResponse } from '@/types/shiftAttendance';
+import { Response } from '@/types/response';
 import api from './client';
+import { handleApiError } from '@/lib/handleApiError';
 
 export const timeIn = async (username: string) => {
     try {
@@ -11,6 +12,10 @@ export const timeIn = async (username: string) => {
 
         return response.data;
     } catch (error: any) {
+        if (handleApiError(error)) {
+            return;
+        }
+
         throw new Error(error.response?.data?.message || 'Shift Added Failed!');
     }
 };
@@ -22,6 +27,10 @@ export const getShiftAttendance = async (username: string) => {
 
         return response.data;
     } catch (error: any) {
+        if (handleApiError(error)) {
+            return;
+        }
+
         throw new Error(error.response?.data?.message || 'Failed to get shift Attendance!');
     }
 };
@@ -34,6 +43,10 @@ export const endShift = async (username: string, id: string) => {
 
         return response.data;
     } catch (error: any) {
+        if (handleApiError(error)) {
+            return;
+        }
+        
         throw new Error(error.response?.data?.message || 'Shift Update Failed!');
     }
 };
