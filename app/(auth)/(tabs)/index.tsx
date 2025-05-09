@@ -46,6 +46,11 @@ export default function HomeScreen() {
       }
 
       var response = await shiftApi.getShiftAttendance(user!.username);
+
+      if (!response) {
+        console.warn('Time in failed or user unauthorized');
+        return;
+      }
       
       setPresentToday(response.presentToday);
       setShiftId(response.shiftId);
@@ -61,6 +66,12 @@ export default function HomeScreen() {
 
   const handleTimeIn = async () => {
     var response = await shiftApi.timeIn(user!.username);
+
+    if (!response) {
+      console.warn('Time in failed or user unauthorized');
+      return;
+    }
+
     if (response.isSuccess) {
       setPresentToday(true);
       timeOutButton(true, false)

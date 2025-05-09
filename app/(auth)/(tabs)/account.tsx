@@ -12,7 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 
-import * as authApi from '../../../api/auth';
+import * as authApi from '@/api/auth';
 
 
 export default function TabTwoScreen() {
@@ -48,6 +48,12 @@ export default function TabTwoScreen() {
 
   const handleChangePassword = async () => {
     var response = await authApi.updatePassword(user!.username, newPassword);
+
+    if (!response) {
+      console.warn('Time in failed or user unauthorized');
+      return;
+    }
+
     if (!response.isSuccess) { 
       alert('Password changed failed!')
     }
@@ -62,7 +68,7 @@ export default function TabTwoScreen() {
         // onPress={pickImage}
         >
         <Image
-          source={image ? { uri: image } : require('../../../assets/images/default-avatar.png')}
+          source={image ? { uri: image } : require('@/assets/images/default-avatar.png')}
           style={styles.avatar}
         />
         {/* <Text style={styles.changePicText}>Tap to change picture</Text> */}
