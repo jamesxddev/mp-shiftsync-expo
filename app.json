@@ -21,7 +21,10 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.jamesxddev.mpshiftsync"
+      "package": "com.jamesxddev.mpshiftsync",
+      "config": {
+        "cleartextTraffic": true
+      }
     },
     "web": {
       "bundler": "metro",
