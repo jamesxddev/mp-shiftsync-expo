@@ -12,6 +12,7 @@ type User = {
 type AuthContextType = {
   user:  User | null;
   login: (username: string, password: string) => Promise<void>; //() => void;
+  login2: (username: string, password: string) => Promise<void>; //() => void;
   logout: () => void;
 };
 
@@ -19,13 +20,58 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (username: string, password: string) => {
     
-    const userData = await authApi.login(username, password);
-    setUser(userData);
-    saveToken(userData.token)
+    const response = await authApi.login(username, password);
+
+    if (!response) {
+      alert('Login Response null!')
+      return;
+
+    }
+    
+    if (!response.token) {
+      alert('Login Token null!')
+      return;
+    }
+    
+    const user: User = {
+      email: response.email,
+      token: response.token,
+      username: response.username,
+      fullName: response.fullname, // map to camelCase
+    };
+
+    setUser(user);
+    saveToken(response?.token)
+  };
+
+  const login2 = async (username: string, password: string) => {
+    
+    const response = await authApi.login2(username, password);
+
+    if (!response) {
+      alert('Login Response null!')
+      return;
+
+    }
+    
+    if (!response.token) {
+      alert('Login Token null!')
+      return;
+    }
+    
+    const user: User = {
+      email: response.email,
+      token: response.token,
+      username: response.username,
+      fullName: response.fullname, // map to camelCase
+    };
+
+    setUser(user);
+    saveToken(response?.token)
   };
 
 
@@ -35,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, login2, logout }}>
       {children}
     </AuthContext.Provider>
   );

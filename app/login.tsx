@@ -9,7 +9,7 @@ import { ThemedText } from '@/components/ThemedText';
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { login, login2 } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [secureText, setSecureText] = useState(true);
@@ -26,6 +26,49 @@ export default function LoginScreen() {
         alert(e.message);
       }
     
+  };
+
+  const handleLogin2 = async () => {
+    try {
+      
+        await login2(username, password);
+          
+        // This redirects to the tab navigation screen under (tabs)
+        router.replace('/(auth)/(tabs)');  
+      } catch (e: any) {
+        alert(e.message);
+      }
+    
+  };
+
+  
+
+  const handleLoginFetch = async () => {
+    try {
+      const response = await fetch('http://192.168.100.27:8082/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+      console.log(data); // Handle the response data
+      alert('Success' + data)
+
+      if (!response.ok) {
+        alert('Response not Ok' + response)
+        throw new Error(data.message || 'Failed to login');
+      }
+
+    } catch (error) {
+      console.log('Error:', error); // Handle any errors
+      alert('Catched Error' + error)
+    }
   };
 
   return (
@@ -59,6 +102,12 @@ export default function LoginScreen() {
 
         <TouchableOpacity style={styles.button} onPress={handleLogin}>
           <Text style={styles.buttonText}>Log In</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleLoginFetch}>
+          <Text style={styles.buttonText}>Log 2</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={handleLoginFetch}>
+          <Text style={styles.buttonText}>Log 2</Text>
         </TouchableOpacity>
       </View>
     </Header>
@@ -95,6 +144,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderColor: '#d1d5db',
     borderWidth: 1,
+    color: "#000"
   },
   toggleText: {
     textAlign: 'right',
