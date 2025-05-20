@@ -12,7 +12,6 @@ type User = {
 type AuthContextType = {
   user:  User | null;
   login: (username: string, password: string) => Promise<void>; //() => void;
-  login2: (username: string, password: string) => Promise<void>; //() => void;
   logout: () => void;
 };
 
@@ -48,40 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     saveToken(response?.token)
   };
 
-  const login2 = async (username: string, password: string) => {
-    
-    const response = await authApi.login2(username, password);
-
-    if (!response) {
-      alert('Login Response null!')
-      return;
-
-    }
-    
-    if (!response.token) {
-      alert('Login Token null!')
-      return;
-    }
-    
-    const user: User = {
-      email: response.email,
-      token: response.token,
-      username: response.username,
-      fullName: response.fullname, // map to camelCase
-    };
-
-    setUser(user);
-    saveToken(response?.token)
-  };
-
-
   const logout = () => {
     setUser(null);
     deleteToken();
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, login2, logout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

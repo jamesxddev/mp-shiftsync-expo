@@ -17,16 +17,11 @@
       }
     },
     "android": {
-      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.jamesxddev.mpshiftsync",
-      "networkSecurityConfig": "./network_security_config.xml",
-      "config": {
-        "cleartextTraffic": true
-      }
+      "package": "com.jamesxddev.mpshiftsync"
     },
     "web": {
       "bundler": "metro",
