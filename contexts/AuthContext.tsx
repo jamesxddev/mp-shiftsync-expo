@@ -25,17 +25,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     
     const response = await authApi.login(username, password);
 
-    if (!response) {
-      alert('Login Response null!')
-      return;
-
-    }
-    
-    if (!response.token) {
-      alert('Login Token null!')
-      return;
-    }
-    
     const user: User = {
       email: response.email,
       token: response.token,

@@ -7,9 +7,6 @@ import { handleApiError } from '@/lib/handleApiError';
 
 export const login = async (username: string, password: string) => {
   try {
-
-    console.log("🔍 Starting login request");
-
     const response = await axios.post<LoginResponse>(`${config.API_URL}/auth/login`, {
       username,
       password,
@@ -17,7 +14,6 @@ export const login = async (username: string, password: string) => {
 
     return response.data;
   } catch (error: any) {
-    console.log(error,'error')
     throw new Error(error.response?.data?.message || 'Login Failed');
 
   }
