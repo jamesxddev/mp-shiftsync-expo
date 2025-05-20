@@ -23,8 +23,7 @@ export const timeIn = async (username: string) => {
 export const getShiftAttendance = async (username: string) => {
     try {
         const response = await api.get<ShiftAttendanceResponse>(`${config.API_URL}/shift/${username}`, {});
-        console.log(response, 'response Types')
-
+        
         return response.data;
     } catch (error: any) {
         if (handleApiError(error)) {

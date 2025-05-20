@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderColor: '#d1d5db',
     borderWidth: 1,
+    color: "#000"
   },
   toggleText: {
     textAlign: 'right',

@@ -6,14 +6,16 @@ const ENV_CONFIG: Record<Env, { API_URL: string }> = {
   development: {
     // API_URL: 'https://localhost:44305/api', // web
     // API_URL: 'http://192.168.100.27:5000/api', // mobile
-    // API_URL: 'http://192.168.100.27:8082/api', // IIS 
-    API_URL: 'http://192.168.1.100:8082/api', // IIS 
+    // API_URL: 'http://192.168.100.27:3001/api', // IIS 
+    API_URL: 'https://malayanprints.cc/api'
+
   },
   production: {
-    API_URL: 'http://192.168.1.100:8082/api'
+    API_URL: 'https://malayanprints.cc/api'
   },
   test: {
-    API_URL: 'http://192.168.1.100:8082/api'
+    // API_URL: 'http://192.168.100.27:3001/api'
+    API_URL: 'https://malayanprints.cc/api'
   },
 };
 

@@ -19,15 +19,22 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const login = async (username: string, password: string) => {
     
-    const userData = await authApi.login(username, password);
-    setUser(userData);
-    saveToken(userData.token)
-  };
+    const response = await authApi.login(username, password);
 
+    const user: User = {
+      email: response.email,
+      token: response.token,
+      username: response.username,
+      fullName: response.fullname, // map to camelCase
+    };
+
+    setUser(user);
+    saveToken(response?.token)
+  };
 
   const logout = () => {
     setUser(null);

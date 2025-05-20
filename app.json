@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/app-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.jamesxddev.mpshiftsync",
@@ -36,7 +36,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/app-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
@@ -57,6 +57,12 @@
         "projectId": "b48c6285-ce5d-4ada-81de-2bf2a117fe4c"
       }
     },
-    "owner": "jamesxddev"
+    "owner": "jamesxddev",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b48c6285-ce5d-4ada-81de-2bf2a117fe4c"
+    }
   }
 }
